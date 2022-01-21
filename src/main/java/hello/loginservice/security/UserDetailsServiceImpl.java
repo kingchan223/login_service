@@ -17,7 +17,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class UserlDetailsServiceImpl implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 
@@ -25,14 +25,16 @@ public class UserlDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         System.out.println("email = " + email);
         User findUser = userRepository.findByEmail(email);
-        SecurityUser securityUser = new SecurityUser();
-        securityUser.setUsername(findUser.getEmail());
-        securityUser.setPassword(findUser.getPassword());
-        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+        UserDetailsImpl userDetails = new UserDetailsImpl();
+        userDetails.setUsername(findUser.getEmail());
+        userDetails.setPassword(findUser.getPassword());
+        List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(findUser.getRole()));
 
-        securityUser.setAuthorities(authorities);
+        userDetails.setAuthorities(authorities);
         System.out.println("해당 사용자 email이씀");
-        return securityUser;
+        return userDetails;
     }
+
+
 }

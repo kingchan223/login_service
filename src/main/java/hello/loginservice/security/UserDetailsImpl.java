@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class SecurityUser implements UserDetails {
+public class UserDetailsImpl implements UserDetails {
     private User user;
     private String username;  // principal - biz name : email
     private String password;  // credential
