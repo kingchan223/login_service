@@ -36,4 +36,8 @@ public class User extends DateBaseEntity{
         user.role = "user";
         return user;
     }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

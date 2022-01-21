@@ -21,6 +21,7 @@ public class Controller {
         return "hello";
     }
 
+    //권한이 없는 사용자라면 해당 api로 redirect 된다.
     @GetMapping("/loginForm")
     public String loginForm() {
         return "로그인 폼입니다.";
@@ -32,6 +33,7 @@ public class Controller {
 //
 //    }
 
+    //여기서 회원가입을 완료해도 loginForm 으로 redirect 된다.
     @PostMapping("/join")
     public User join(@RequestBody JoinUser joinUser) {
         log.info("사용자 입력 joinUser = {}", joinUser);
@@ -43,6 +45,6 @@ public class Controller {
 
     @GetMapping("/user/helloUser")
     public String afterSuccessLogin() {
-        return "helloUser your login is successful";
+        return "helloUser your login is successful you have authorization";
     }
 }
