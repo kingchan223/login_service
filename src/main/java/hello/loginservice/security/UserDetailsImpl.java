@@ -1,74 +1,53 @@
 package hello.loginservice.security;
 
 import hello.loginservice.entity.User;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+@RequiredArgsConstructor
+@Getter
 public class UserDetailsImpl implements UserDetails {
-    private User user;
-    private String username;  // principal - biz name : email
-    private String password;  // credential
-    private String name;  // biz data
-    private Collection<? extends GrantedAuthority> authorities;
+    private final User user;
+    private final Collection<? extends GrantedAuthority> authorities;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> collect = new ArrayList<>();
-        collect.add(() -> user.getRole());
-        return collect;
+        return authorities;
     }
 
     @Override
     public String getPassword() {
-        return password;
+        return user.getPassword();
     }
 
     //현재 username 대신 email을 사용한다.
     @Override
     public String getUsername() {
-        return username;
+        return user.getEmail();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return user.getIsEnable();
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return user.getIsEnable();
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return user.getIsEnable();
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
-        this.authorities = authorities;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+        return user.getIsEnable();
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.Optional;
 
 
 @Transactional
@@ -23,7 +24,7 @@ class UserRepositoryTest {
         User user = User.makeUser("kkkk@", "1111");
         em.persist(user);
 
-        User findUser = userRepository.findByEmail("kkkk@");
+        User findUser = userRepository.findByEmail("kkkk@").get();
         Assertions.assertThat(user).isEqualTo(findUser);
 
     }

@@ -3,6 +3,7 @@ package hello.loginservice.controller;
 import hello.loginservice.entity.JoinUser;
 import hello.loginservice.entity.User;
 import hello.loginservice.repository.UserRepository;
+import hello.loginservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,8 +14,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class Controller {
 
-    private final BCryptPasswordEncoder passwordEncoder;
     private final UserRepository repository;
+    private final UserService userService;
 
     @GetMapping("/hello")
     public String hello() {
@@ -36,15 +37,19 @@ public class Controller {
     //여기서 회원가입을 완료해도 loginForm 으로 redirect 된다.
     @PostMapping("/join")
     public User join(@RequestBody JoinUser joinUser) {
-        log.info("사용자 입력 joinUser = {}", joinUser);
-        // -- 서비스로 가야함 --
-        String ecp = passwordEncoder.encode(joinUser.getPassword());
-        User user = User.makeUser(joinUser.getEmail(), ecp);
-        return repository.save(user); // DTO반환 X
+        //TODO
+        /* 클라이언트와 협의하여 어떤 형식을 보내면 /login을 보내는건지 정하고 그 응답을 보내자. */
+        return userService.join(joinUser);
     }
 
     @GetMapping("/user/helloUser")
     public String afterSuccessLogin() {
         return "helloUser your login is successful you have authorization";
     }
+
+    @GetMapping("/error/unauthorized")
+    public String noToken() {
+        return "No Token~";
+    }
+
 }

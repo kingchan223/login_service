@@ -32,11 +32,10 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
         assert userInfo != null;
 
-        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(
-                userInfo.getEmail(),
-                userInfo.getPassword()
-        );
-        setDetails(request, authRequest); return this.getAuthenticationManager().authenticate(authRequest);
+        UsernamePasswordAuthenticationToken authRequest =
+                new UsernamePasswordAuthenticationToken(userInfo.getEmail(), userInfo.getPassword());
+        setDetails(request, authRequest);
+        return this.getAuthenticationManager().authenticate(authRequest);
     }
 
     private JoinUser getUserInfo(HttpServletRequest request){

@@ -1,17 +1,19 @@
 package hello.loginservice.entity;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @EntityListeners(AuditingEntityListener.class) // 이벤트 기반으로 동작한다!
 @Getter
 @MappedSuperclass
-public class DateBaseEntity {
+public class DateBaseEntity implements Serializable{
 
     @CreatedDate
     @Column(updatable = false)
@@ -31,4 +33,8 @@ public class DateBaseEntity {
     public void preUpdate(){
         lastModifiedDate = LocalDateTime.now();
     }
+
+    @Setter
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT true")
+    private Boolean isEnable = true;
 }

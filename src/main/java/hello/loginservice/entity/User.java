@@ -2,15 +2,14 @@ package hello.loginservice.entity;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.io.Serializable;
 
 @ToString
 @NoArgsConstructor(access= AccessLevel.PROTECTED)/*프록시 객체를 위해 protect로 기본 생성자*/
 @Getter
 @Entity
-public class User extends DateBaseEntity{
+public class User extends DateBaseEntity implements Serializable {
     @Id @GeneratedValue
     private Long id;
 
@@ -22,7 +21,14 @@ public class User extends DateBaseEntity{
     private String phone;//'-'없이
     private String birthday;//생년월일 7자리
     private String nickname;
-    private String role;
+
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
+    private String refreshToken;
+
+    private String provider;
+    private String providerId;
 
     public static User makeUser(String email, String password) {
         User user = new User();
@@ -33,7 +39,21 @@ public class User extends DateBaseEntity{
         user.phone = "01088881111";
         user.birthday = "970223";
         user.nickname = "kokiyo97";
-        user.role = "user";
+        user.role = UserRole.ROLE_USER;
+        return user;
+    }
+
+    public static User makeUser(String email, String password, String refreshToken) {
+        User user = new User();
+        user.email = email;
+        user.password = password;
+        user.username = "이찬영";
+        user.sex = "F";
+        user.phone = "01088881111";
+        user.birthday = "970223";
+        user.nickname = "kokiyo97";
+        user.role = UserRole.ROLE_USER;
+        user.refreshToken = refreshToken;
         return user;
     }
 

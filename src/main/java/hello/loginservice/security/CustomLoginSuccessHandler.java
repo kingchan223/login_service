@@ -1,7 +1,9 @@
 package hello.loginservice.security;
 
+import hello.loginservice.entity.User;
+import hello.loginservice.security.jwt.AuthConstants;
+import hello.loginservice.security.jwt.TokenUtils;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,7 +13,9 @@ import java.io.IOException;
 public class CustomLoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        response.sendRedirect("/user/helloUser");
+
+        final User user = ((UserDetailsImpl) authentication.getPrincipal()).getUser();
+        final String token = TokenUtils.generateJwtToken(user);
+        response.addHeader(AuthConstants.AUTH_HEADER, AuthConstants.TOKEN_TYPE + " " + token);
     }
 }

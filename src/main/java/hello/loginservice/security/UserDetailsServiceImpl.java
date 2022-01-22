@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -23,17 +24,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        System.out.println("email = " + email);
-        User findUser = userRepository.findByEmail(email);
-        UserDetailsImpl userDetails = new UserDetailsImpl();
-        userDetails.setUsername(findUser.getEmail());
-        userDetails.setPassword(findUser.getPassword());
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(findUser.getRole()));
-
-        userDetails.setAuthorities(authorities);
-        System.out.println("해당 사용자 email이씀");
-        return userDetails;
+        return userRepository.findByEmail(email)
+                .map(u -> new UserDetailsImpl(u, Collections.singleton(new SimpleGrantedAuthority(u.getRole().getValue()))))
+                .orElseThrow(() -> new UserNotFoundException(email));
     }
 
 

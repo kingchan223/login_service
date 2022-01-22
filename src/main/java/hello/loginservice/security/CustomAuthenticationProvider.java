@@ -16,12 +16,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     private final BCryptPasswordEncoder passwordEncoder;
 
 
-    @Override public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+    @Override
+    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
-        // AuthenticaionFilter에서 생성된 토큰으로부터 아이디와 비밀번호를 조회함
         String userEmail = token.getName();
         String userPw = (String) token.getCredentials();
-        // UserDetailsService를 통해 DB에서 아이디로 사용자 조회
         UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(userEmail);
         if (!passwordEncoder.matches(userPw, userDetails.getPassword()))
             throw new BadCredentialsException(userDetails.getUsername() + "Invalid password");
