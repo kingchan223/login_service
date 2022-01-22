@@ -1,5 +1,7 @@
 package hello.loginservice.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -19,6 +21,7 @@ public class DateBaseEntity implements Serializable{
     @Column(updatable = false)
     private LocalDateTime createdDate;
 
+//    @JsonDeserialize(using = LocalDateDeserializer.class)
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
 

@@ -25,7 +25,6 @@ public class User extends DateBaseEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    private String refreshToken;
 
     private String provider;
     private String providerId;
@@ -43,17 +42,16 @@ public class User extends DateBaseEntity implements Serializable {
         return user;
     }
 
-    public static User makeUser(String email, String password, String refreshToken) {
+    public static User makeUser(String email, String password,String nickname) {
         User user = new User();
         user.email = email;
         user.password = password;
+        user.nickname = nickname;
+        user.role = UserRole.ROLE_USER;
         user.username = "이찬영";
         user.sex = "F";
         user.phone = "01088881111";
         user.birthday = "970223";
-        user.nickname = "kokiyo97";
-        user.role = UserRole.ROLE_USER;
-        user.refreshToken = refreshToken;
         return user;
     }
 

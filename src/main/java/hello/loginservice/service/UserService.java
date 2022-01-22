@@ -23,13 +23,7 @@ public class UserService {
     public User join(JoinUser joinUser) {
         //유효성 검사 된거라고 가정
         String ecp = passwordEncoder.encode(joinUser.getPassword());
-        String refreshToken = tokenUtils.createRefreshToken(
-                joinUser.getEmail(),
-                joinUser.getNickname(),
-                UserRole.ROLE_USER.getValue()
-        );//회원가입은 무조건 ROLE_USER
-
-        User user = User.makeUser(joinUser.getEmail(), ecp, refreshToken);
+        User user = User.makeUser(joinUser.getEmail(), ecp, joinUser.getNickname());
         return userRepository.save(user);
     }
 }

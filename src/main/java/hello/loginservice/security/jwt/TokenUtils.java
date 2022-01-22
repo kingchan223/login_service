@@ -56,7 +56,7 @@ public final class TokenUtils {
                 .sign(Algorithm.HMAC512(JwtProperties.REFRESH_SECRET));
     }
 
-    public static boolean isValidToken(String token) {
+    public boolean isValidToken(String token) {
         try {
             Claims claims = getClaimsFormToken(token);
             log.info("expireTime :" + claims.getExpiration());

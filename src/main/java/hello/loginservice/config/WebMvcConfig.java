@@ -2,14 +2,19 @@ package hello.loginservice.config;
 
 import hello.loginservice.security.HeaderFilter;
 import hello.loginservice.security.jwt.JwtTokenInterceptor;
+import hello.loginservice.security.jwt.TokenUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+@RequiredArgsConstructor
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
+
+    private final TokenUtils tokenUtils;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -32,7 +37,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Bean
     public JwtTokenInterceptor jwtTokenInterceptor() {
-        return new JwtTokenInterceptor();
+        return new JwtTokenInterceptor(tokenUtils);
     }
 
 }

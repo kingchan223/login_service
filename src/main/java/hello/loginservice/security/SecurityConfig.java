@@ -1,6 +1,7 @@
 package hello.loginservice.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hello.loginservice.security.jwt.TokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder passwordEncoder;
     private final ObjectMapper objectMapper;
+    private final TokenUtils tokenUtils;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -52,7 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public CustomAuthenticationProvider customAuthenticationProvider() {
-        return new CustomAuthenticationProvider(userDetailsService, passwordEncoder);
+        return new CustomAuthenticationProvider(userDetailsService, passwordEncoder, tokenUtils);
     }
 
     @Override
