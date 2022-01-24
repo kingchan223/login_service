@@ -38,7 +38,7 @@ public class Controller {
     @PostMapping("/join")
     public User join(@RequestBody JoinUser joinUser) {
         //TODO
-        /* 클라이언트와 협의하여 어떤 형식을 보내면 /login을 보내는건지 정하고 그 응답을 보내자. */
+        /* 클라이언트와 협의하여 어떤 형식을 보내면 /login을 보내는 건지 정하고 그 응답을 보내자. */
         return userService.join(joinUser);
     }
 
