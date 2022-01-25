@@ -1,9 +1,9 @@
 package hello.loginservice.security;
 
-public class UserNotFoundException extends RuntimeException {
+import org.springframework.security.core.AuthenticationException;
 
+public class UserNotFoundException extends AuthenticationException {
     public UserNotFoundException(String userEmail){
         super(userEmail + " NotFoundException");
     }
-
 }

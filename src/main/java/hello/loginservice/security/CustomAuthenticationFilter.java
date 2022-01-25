@@ -2,6 +2,7 @@ package hello.loginservice.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hello.loginservice.entity.JoinUser;
+import hello.loginservice.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -9,7 +10,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.StreamUtils;
 
-import javax.servlet.ServletInputStream;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -23,11 +24,11 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     public CustomAuthenticationFilter(AuthenticationManager authenticationManager, ObjectMapper objectMapper) {
         super.setAuthenticationManager(authenticationManager);
         this.objectMapper = objectMapper;
-
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+        System.out.println("-----------CustomAuthenticationFilter.attemptAuthentication------------");
         JoinUser userInfo = getUserInfo(request);
 
         assert userInfo != null;
@@ -38,14 +39,16 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         return this.getAuthenticationManager().authenticate(authRequest);
     }
 
+    /* 여기서 토큰을 확인하고 없다면 로그인을 한다.*/
     private JoinUser getUserInfo(HttpServletRequest request){
+        JoinUser joinUser = null;
         try {
             ServletInputStream ins = request.getInputStream();
             String json = StreamUtils.copyToString(ins, StandardCharsets.UTF_8);
-            return objectMapper.readValue(json, JoinUser.class);
+            joinUser = objectMapper.readValue(json, JoinUser.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;//TODO
+        return joinUser;//TODO
     }
 }

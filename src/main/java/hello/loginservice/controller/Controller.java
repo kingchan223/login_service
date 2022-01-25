@@ -36,10 +36,10 @@ public class Controller {
 
     //여기서 회원가입을 완료해도 loginForm 으로 redirect 된다.
     @PostMapping("/join")
-    public User join(@RequestBody JoinUser joinUser) {
+    public User join(@RequestBody JoinUser user) {
         //TODO
         /* 클라이언트와 협의하여 어떤 형식을 보내면 /login을 보내는 건지 정하고 그 응답을 보내자. */
-        return userService.join(joinUser);
+        return userService.join(user);
     }
 
     @GetMapping("/user/helloUser")

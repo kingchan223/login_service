@@ -23,7 +23,7 @@ public class UserService {
     public User join(JoinUser joinUser) {
         //유효성 검사 된거라고 가정
         String ecp = passwordEncoder.encode(joinUser.getPassword());
-        User user = User.makeUser(joinUser.getEmail(), ecp, joinUser.getNickname());
+        User user = User.makeUser(joinUser.getEmail(), ecp, joinUser.getNickname(), joinUser.getUsername(),joinUser.getSex(), joinUser.getPhone(), joinUser.getBirthday());
         return userRepository.save(user);
     }
 }
