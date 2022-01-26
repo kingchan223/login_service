@@ -15,33 +15,28 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
-//TODO 2번
 @Slf4j
 @RequiredArgsConstructor
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final TokenUtils tokenUtils;
-
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        System.out.println("-----------CustomAuthenticationProvider.attemptAuthentication------------");
         UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
-        String userEmail = token.getName();
-        String userPw = (String) token.getCredentials();
-        UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(userEmail);//여기서 회원이 반환된다.
+        UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(token.getName());
+
         if (userDetails == null){
             log.error("invalid email");
             throw new UsernameNotFoundException(userDetails.getUsername()+"Invalid password");
         }
-        if (!passwordEncoder.matches(userPw, userDetails.getPassword())){
+        if (!passwordEncoder.matches((String) token.getCredentials(), userDetails.getPassword())){
             log.error("invalid password = {}", userDetails.getUsername());
             throw new BadCredentialsException(userDetails.getUsername()+"Invalid password");
         }
 
-        return new UsernamePasswordAuthenticationToken(userDetails, userPw, userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userDetails, (String) token.getCredentials(), userDetails.getAuthorities());
     }
 
     @Override public boolean supports(Class<?> authentication) {

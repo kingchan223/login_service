@@ -3,6 +3,7 @@ package hello.loginservice.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hello.loginservice.entity.JoinUser;
 import hello.loginservice.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 //TODO 1번
+@Slf4j
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final ObjectMapper objectMapper;
@@ -28,24 +30,22 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        System.out.println("-----------CustomAuthenticationFilter.attemptAuthentication------------");
         JoinUser userInfo = getUserInfo(request);
-
-        assert userInfo != null;
         UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userInfo.getEmail(), userInfo.getPassword());
         setDetails(request, authRequest);
         return this.getAuthenticationManager().authenticate(authRequest);
     }
 
     private JoinUser getUserInfo(HttpServletRequest request){
-        JoinUser joinUser = null;
+        JoinUser joinUser = new JoinUser("nonmatchemail", "nonmatchpassword", "nonmatchnickname");
         try {
             ServletInputStream ins = request.getInputStream();
             String json = StreamUtils.copyToString(ins, StandardCharsets.UTF_8);
             joinUser = objectMapper.readValue(json, JoinUser.class);
         } catch (IOException e) {
+            log.error("[심각] ObjectMapper 작동 ERROR");
             e.printStackTrace();
         }
-        return joinUser;//TODO
+        return joinUser;
     }
 }

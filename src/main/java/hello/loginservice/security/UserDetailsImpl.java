@@ -25,7 +25,6 @@ public class UserDetailsImpl implements UserDetails {
         return user.getPassword();
     }
 
-    //현재 username 대신 email을 사용한다.
     @Override
     public String getUsername() {
         return user.getEmail();
@@ -56,6 +55,6 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     public String getRole() {
-        return user.getRole().getValue();
+        return user.getRole().toString();
     }
 }

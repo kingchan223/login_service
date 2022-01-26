@@ -7,29 +7,30 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 
-// RedisSerivce
 @RequiredArgsConstructor
 @Service
 public class RedisService {
 
     private final RedisTemplate redisTemplate;
 
-    // 키-벨류 설정
-    public void setValues(String token, String email){
-        System.out.println("key = "+email);
-        System.out.println("value = "+token);
+    public void setAccessToken(String token, String email){
+        System.out.println("make access token of "+email);
         ValueOperations<String, String> values = redisTemplate.opsForValue();
-//        values.set(name, age);
-        values.set(token, email, Duration.ofMinutes(3));  // 3분 뒤 메모리에서 삭제된다.
+        values.set(email, token, Duration.ofMinutes(3));
     }
 
-    // 키값으로 벨류 가져오기
-    public String getValues(String token){
+    public void setRefreshToken(String token, String email){
+        System.out.println("make refresh token of "+email);
         ValueOperations<String, String> values = redisTemplate.opsForValue();
-        return values.get(token);
+        values.set(email, token, Duration.ofDays(3));
     }
 
-    // 키-벨류 삭제
+    public String getValues(String email){
+        ValueOperations<String, String> values = redisTemplate.opsForValue();
+        System.out.println("getValues : "+ values.get(email));
+        return values.get(email);
+    }
+
     public void delValues(String token) {
         redisTemplate.delete(token.substring(7));
     }

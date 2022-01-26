@@ -2,6 +2,8 @@ package hello.loginservice.security.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import hello.loginservice.entity.User;
 import hello.loginservice.entity.UserRole;
 import io.jsonwebtoken.*;
@@ -18,12 +20,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static hello.loginservice.security.jwt.JwtProperties.*;
+
 @Slf4j
 @Component/**/
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TokenUtils {
 
-    private static final String secretKey = "ThisIsA_SecretKeyForJwtExample";
+    private static final String secretKey = SECRET;
 
     public static String generateJwtToken(User user) {
         JwtBuilder builder = Jwts.builder()
@@ -37,33 +41,37 @@ public final class TokenUtils {
     }
 
     public String createAccessToken(String email, String nickname, String role){
-       return JWT.create()
-                .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.ACCESS_EXPIRED_TIME))
-                .withIssuer("LEEE")
-                .withClaim("email", email)
-                .withClaim("nickname", nickname)
-                .withClaim("role", role)
-                .sign(Algorithm.HMAC512(JwtProperties.ACCESS_SECRET));
+//       return JWT.create()
+//                .withExpiresAt(new Date(System.currentTimeMillis() + ACCESS_EXPIRED_TIME))
+//                .withIssuer("LEEE")
+//                .withClaim("email", email)
+//                .withClaim("nickname", nickname)
+//                .withClaim("role", role)
+//                .sign(Algorithm.HMAC512(ACCESS_SECRET));
+
+        return Jwts.builder()
+                .setIssuer(ISSUER)
+                .setSubject(email+"/"+nickname+"/"+role )
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + ACCESS_EXPIRED_TIME))
+                .signWith(SignatureAlgorithm.HS512, SECRET)
+                .compact();
     }
 
     public String createRefreshToken(String email, String nickname, String role){
-        return JWT.create()
-                .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.REFRESH_EXPIRED_TIME))
-                .withIssuer("LEEE")
-                .withClaim("email", email)
-                .withClaim("nickname", nickname)
-                .withClaim("role", role)
-                .sign(Algorithm.HMAC512(JwtProperties.REFRESH_SECRET));
+        return Jwts.builder()
+                .setIssuer(ISSUER)
+                .setSubject(email+"/"+nickname+"/"+role )
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + REFRESH_EXPIRED_TIME))
+                .signWith(SignatureAlgorithm.HS512, SECRET)
+                .compact();
     }
 
     public boolean isValidToken(String token) {
         try {
-            Claims claims = getClaimsFormToken(token);
-            log.info("expireTime :" + claims.getExpiration());
-            log.info("email :" + claims.get("email"));
-            log.info("role :" + claims.get("role"));
+            Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token);
             return true;
-
         } catch (ExpiredJwtException exception) {
             log.error("Token Expired");
             return false;
@@ -80,6 +88,14 @@ public final class TokenUtils {
         return header.split(" ")[1];
     }
 
+    public String get(String token, String key){
+        if(key.equals("email"))
+            return getUserEmailFromToken(token);
+        else if(key.equals("role"))
+            return getRoleFromToken(token);
+        else return null;
+    }
+
     private static Date createExpireDateForOneYear() {
         // 토큰 만료시간은 30일으로 설정
         Calendar c = Calendar.getInstance();
@@ -89,11 +105,9 @@ public final class TokenUtils {
 
     private static Map<String, Object> createHeader() {
         Map<String, Object> header = new HashMap<>();
-
         header.put("typ", "JWT");
         header.put("alg", "HS256");
         header.put("regDate", System.currentTimeMillis());
-
         return header;
     }
 
@@ -119,11 +133,13 @@ public final class TokenUtils {
 
     private static String getUserEmailFromToken(String token) {
         Claims claims = getClaimsFormToken(token);
-        return (String) claims.get("email");
+        String sub = (String) claims.get("sub");
+        return sub.split("/")[0];
+
     }
 
-    private static UserRole getRoleFromToken(String token) {
+    private static String getRoleFromToken(String token) {
         Claims claims = getClaimsFormToken(token);
-        return (UserRole) claims.get("role");
+        return claims.get("role").toString();
     }
 }
