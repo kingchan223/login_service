@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.io.PrintWriter;
 
 //TODO 2번
 @Slf4j
@@ -42,14 +41,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException(userDetails.getUsername()+"Invalid password");
         }
 
-        /*토큰 박을 때 */
-        String accessToken = tokenUtils.createAccessToken(userDetails.getUsername(), userDetails.getNickname(), userDetails.getRole());
-        String refreshToken = tokenUtils.createRefreshToken(userDetails.getUsername(), userDetails.getNickname(), userDetails.getRole());
-
         return new UsernamePasswordAuthenticationToken(userDetails, userPw, userDetails.getAuthorities());
     }
-
-
 
     @Override public boolean supports(Class<?> authentication) {
         return authentication.equals(UsernamePasswordAuthenticationToken.class);

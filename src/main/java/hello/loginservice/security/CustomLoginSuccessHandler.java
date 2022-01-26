@@ -20,13 +20,12 @@ public class CustomLoginSuccessHandler extends SavedRequestAwareAuthenticationSu
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-
+        System.out.println("CustomLoginSuccessHandler.onAuthenticationSuccess");
         final User user = ((UserDetailsImpl) authentication.getPrincipal()).getUser();
         final String accessToken = tokenUtils.createAccessToken(user.getEmail(), user.getNickname(), user.getRole().getValue());
         final String refreshToken = tokenUtils.createAccessToken(user.getEmail(), user.getNickname(), user.getRole().getValue());
-        redisService.setValues(accessToken, user.getEmail());
-        redisService.setValues(refreshToken, user.getEmail());
-
+        redisService.setValues(user.getEmail() + "-at", accessToken);
+        if(redisService.getValues(user.getEmail()+"-rt") == null) redisService.setValues(user.getEmail() + "-rt", refreshToken);
         response.addHeader(AuthConstants.AUTH_HEADER, AuthConstants.TOKEN_TYPE + " " + accessToken);
     }
 }

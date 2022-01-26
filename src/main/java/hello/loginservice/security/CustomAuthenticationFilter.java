@@ -32,14 +32,11 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         JoinUser userInfo = getUserInfo(request);
 
         assert userInfo != null;
-
-        UsernamePasswordAuthenticationToken authRequest =
-                new UsernamePasswordAuthenticationToken(userInfo.getEmail(), userInfo.getPassword());
+        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(userInfo.getEmail(), userInfo.getPassword());
         setDetails(request, authRequest);
         return this.getAuthenticationManager().authenticate(authRequest);
     }
 
-    /* 여기서 토큰을 확인하고 없다면 로그인을 한다.*/
     private JoinUser getUserInfo(HttpServletRequest request){
         JoinUser joinUser = null;
         try {
